@@ -100,7 +100,7 @@ class TestData {
         }
         else{
             this.addTestStep(message + " expected:" + expected + " actual:" + actual,"not equal");
-            throw   ("not equal - expected:" + expected + " actual:" + actual);
+            throw new Error("not equal - expected:" + expected + " actual:" + actual);
         }
     }
 
