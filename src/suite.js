@@ -8,4 +8,4 @@ class Suite {
     endtime = new Date().toISOString();
 }
 
-module.exports.Suite = Suite;
+module.exports = Suite;

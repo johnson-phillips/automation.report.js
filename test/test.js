@@ -1,15 +1,17 @@
-let testData = new require("../src/index").TestData;
-let logger = require('../src/index').logger;
+let report = require("../src/main");
 
-console.log(testData.getSuite());
-testData.startTest('my test','this is intial test');
-testData.addTestStep('begin test');
-testData.addAssertStep('verify string','abc','ABC');
-testData.addAssertStep('verify string','abc','abc');
-testData.addAssertStepFailOnMismatch('verify number',1,1);
-testData.addAssertStep('verify test',13,123);
-testData.endTest();
-console.log(testData.getSuite());
+
+report.logger.level = 'info';
+report.testData.startTest('my test','this is intial test');
+report.testData.addTestStep('begin test',null);
+report.testData.addTestStep('begin test',null,'imagename');
+report.testData.addTestStep('begin test',null,true);
+report.testData.addAssertStep('verify string','abc','ABC');
+report.testData.addAssertStep('verify string','abc','abc');
+report.testData.addAssertStepFailOnMismatch('verify number',1,1);
+report.testData.addAssertStep('verify test',13,123);
+report.testData.endTest();
+console.log(JSON.stringify(report.testData.getSuite()));
 
 
 

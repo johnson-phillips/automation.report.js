@@ -8,5 +8,5 @@ class Test
    steps = [];
 }
 
-module.exports.Test = Test;
+module.exports = Test;
 

@@ -1,9 +1,7 @@
-let log4js = require('log4js');
-let logger = log4js.getLogger('TestData');
-//ALL < TRACE < DEBUG < INFO < WARN < ERROR < FATAL < MARK < OFF
-logger.level = process.env.level || 'ERROR';
-let Test = require('./test').Test;
-let Suite = require('./suite').Suite;
+let logger = require('./logger');
+let Test = require('./test');
+let Suite = require('./suite');
+let Step = require('./step');
 
 class TestData {
     #test;
@@ -30,7 +28,7 @@ class TestData {
 
     addTestStep(description,err)
     {
-        let step = {};
+        let step = new Step();
         step.name = description;
         step.description = description;
         step.starttime = this.startTime;
@@ -46,6 +44,40 @@ class TestData {
         }
         else{
             logger.info(description);
+        }
+        this.#test.steps.push(step);
+        this.#suite.totalsteps += 1;
+    }
+
+    addTestStep(description,err,isApiorScreenshot)
+    {
+        let step = new Step();
+        step.name = description;
+        step.description = description;
+        step.starttime = this.startTime;
+        this.startTime = new Date().toISOString();
+        step.endtime =  this.startTime;
+        if(err)
+        {
+            step.error = err;
+            step.success = false;
+            this.#test.success = false;
+            logger.error(description + ' ' + err);
+        }
+        else{
+            logger.info(description);
+        }
+        const type = typeof isApiorScreenshot;
+        switch (type) {
+            case 'boolean':
+                step.isapi = isApiorScreenshot;
+                step.screenshot = null;
+                break;
+
+            case 'string':
+                step.screenshot = isApiorScreenshot;
+                step.isapi = false;
+                break;
         }
         this.#test.steps.push(step);
         this.#suite.totalsteps += 1;
@@ -95,5 +127,4 @@ class TestData {
     }
 }
 
-module.exports.TestData = new TestData();
-module.exports.logger = logger;
+module.exports = new TestData();
