@@ -3,7 +3,7 @@ javascript library to create html and json data for test execution
 
 usage:
 ```
-let report = require("../src/main");
+let report = require("qe.automation.report");
 report.logger.level = 'info';
 report.testData.startTest('my test','this is intial test');
 report.testData.addTestStep('begin test',null);
