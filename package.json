@@ -1,0 +1,22 @@
+{
+  "name": "qe.automation.report",
+  "version": "0.0.1",
+  "description": "Library to generate json data for html report",
+  "main": "./src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:johnson-phillips/qe.automation.report.git"
+  },
+  "keywords": [
+    "report"
+  ],
+  "author": "Johnson Phillips",
+  "license": "ISC",
+  "devDependencies": {},
+  "dependencies": {
+    "log4js": "^6.1.2"
+  }
+}
