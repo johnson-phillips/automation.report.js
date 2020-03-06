@@ -1,6 +1,5 @@
 let report = require("../src/main");
 
-
 report.logger.level = 'info';
 report.testData.startTest('my test','this is intial test');
 report.testData.addTestStep('begin test',null);

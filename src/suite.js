@@ -1,4 +1,5 @@
 class Suite {
+    id = Date.now();
     totaltests = 0;
     totalpass = 0;
     totalfail = 0;
