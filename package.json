@@ -1,6 +1,6 @@
 {
   "name": "qe.automation.report",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "Library to generate json data for html report",
   "main": "./src/main.js",
   "scripts": {
@@ -17,9 +17,10 @@
   ],
   "author": "Johnson Phillips",
   "license": "ISC",
-  "devDependencies": {},
-  "dependencies": {
-    "log4js": "^6.1.2",
+  "devDependencies": {
     "qe.automation.ui": "^1.0.1"
+  },
+  "dependencies": {
+    "log4js": "^6.1.2"
   }
 }
