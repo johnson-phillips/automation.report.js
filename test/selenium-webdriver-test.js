@@ -1,21 +1,22 @@
-const {Builder, By, Key, until} = require('selenium-webdriver');
+const {Builder, By, Key, until, Capabilities} = require('selenium-webdriver');
 const report = require("../src/main");
+const UI = require('qe.automation.ui');
 
 report.logger.level = 'all';
 (async function example() {
     report.testData.startTest('browser test','browser test');
 
-    let driver = await new Builder().forBrowser('chrome').build();
+    let browser = new UI(Capabilities.chrome());
     try {
-        await driver.get('http://www.google.com/ncr');
-        report.testData.addTestStep('launch browser',null,driver);
-        await driver.findElement(By.name('q')).sendKeys('webdriver', Key.RETURN);
-        report.testData.addTestStep('enter search data',null,driver);
-        await driver.wait(until.titleIs('webdriver - Google Search'), 1000);
-        report.testData.addTestStep('wait for results to show',null,driver);
+        await browser.driver.get('http://www.google.com/ncr');
+        report.testData.addTestStep('launch browser',null,browser.driver);
+        await browser.driver.findElement(By.name('q')).sendKeys('webdriver', Key.RETURN);
+        report.testData.addTestStep('enter search data',null,browser.driver);
+        await browser.driver.wait(until.titleIs('webdriver - Google Search'), 1000);
+        report.testData.addTestStep('wait for results to show',null,browser.driver);
 
         report.testData.endTest();
     } finally {
-        await driver.quit();
+        await browser.driver.quit();
     }
 })();

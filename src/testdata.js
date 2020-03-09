@@ -202,32 +202,18 @@ class TestData {
 }
 
 
-function getRoot()
-{
-    let temp = true;
-    let counter = 1;
-    let rootDir =__dirname;
-    while(temp)
-    {
-        let pathext = '';
-        for(i=0;i < counter; i++)
-        {
-            pathext += './';
-        }
-        counter += 1;
-        let filepath = pathext + 'package.json';
-        if (fs.existsSync(filepath)) {
-            temp  = false;
-            rootDir = path.resolve(pathext);
-            logger.debug('dir for report data is ' + rootDir);
-        }
-        if(counter > 10)
-        {
-            temp = false;
-            logger.debug('root dir not found. setting dir for report data to ' + rootDir);
+function getRoot() {
+    let rootDir = __dirname.split(path.sep);
+    let pathext = '';
+    for(let i=0;i < rootDir.length ; i++){
+        pathext += rootDir[i] + path.sep;
+        if (fs.existsSync(pathext + 'package.json')) {
+            logger.debug('dir for report data is ' + pathext);
+            break;
         }
     }
-    return rootDir;
+    return pathext;
+
 }
 
 
