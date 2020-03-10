@@ -14,6 +14,7 @@ class TestData {
     #reportDir;
     #screenshotDir;
     #supportDrivers = ['Driver','ProtractorBrowser','thenableWebDriverProxy'];
+    #screenShot = false;
 
     constructor() {
         this.#suite = new Suite();
@@ -47,6 +48,10 @@ class TestData {
         this.#suite.totaltests += 1;
     }
 
+    /***
+     * @param description - description of the step
+     * @param err - if any error msg has to be pass. Pass null if there is no error
+     */
     addTestStep(description,err)
     {
         try
@@ -75,6 +80,11 @@ class TestData {
         }
     }
 
+    /***
+     * @param description - description of the step
+     * @param err - if any error msg has to be pass, it can be string or any object including Error object. Pass null if there is no error
+     * @param isApiorScreenshot - pass true, if you adding api request or response, this will ensure the html report will encapsulate this in a text area or pass the driver instance for ui tests to capture screenshot
+     */
     addTestStep(description,err,isApiorScreenshot)
     {
         try
@@ -103,14 +113,28 @@ class TestData {
                     break;
 
                 case 'string':
-                    step.screenshot = isApiorScreenshot + '.png';
+                    step.screenshot = isApiorScreenshot;
                     step.isapi = false;
                     break;
                 case 'object':
                     if(this.#supportDrivers.indexOf(isApiorScreenshot.constructor.name) > -1)
                     {
-                        step.screenshot = this.addScreenShot(isApiorScreenshot);
-                        step.isapi = false;
+                        if(err)
+                        {
+                            (async () => {
+                                await isApiorScreenshot.takeScreenshot().then(img => {
+                                    step.screenshot = img;
+                                });
+                                step.isapi = await false;
+                            })();
+                        }
+                        else
+                        {
+                            step.screenshot = this.addScreenShot(isApiorScreenshot);
+                            step.isapi = false;
+                        }
+
+
                     }
                     else{
                         logger.info(isApiorScreenshot.constructor.name + ' not found');
@@ -135,6 +159,16 @@ class TestData {
         }
     }
 
+    addAssertStep(message,expected,actual,isApiorScreenshot)
+    {
+        if(expected === actual){
+            this.addTestStep(message + " expected:"+expected + " actual:" + actual,null,isApiorScreenshot);
+        }
+        else{
+            this.addTestStep(message + " expected:" + expected + " actual:" + actual,"not equal",isApiorScreenshot);
+        }
+    }
+
     addAssertStepFailOnMismatch(message,expected,actual)
     {
         if(expected === actual){
@@ -142,6 +176,17 @@ class TestData {
         }
         else{
             this.addTestStep(message + " expected:" + expected + " actual:" + actual,"not equal");
+            throw new Error("not equal - expected:" + expected + " actual:" + actual);
+        }
+    }
+
+    addAssertStepFailOnMismatch(message,expected,actual,isApiorScreenshot)
+    {
+        if(expected === actual){
+            this.addTestStep(message + " expected:"+expected + " actual:" + actual,null,isApiorScreenshot);
+        }
+        else{
+            this.addTestStep(message + " expected:" + expected + " actual:" + actual,"not equal",isApiorScreenshot);
             throw new Error("not equal - expected:" + expected + " actual:" + actual);
         }
     }
@@ -179,14 +224,39 @@ class TestData {
     addScreenShot(data) {
         let filename = Date.now() + '.png';
         try {
-             data.takeScreenshot().then(img => {
+            data.takeScreenshot().then(img => {
                 fs.promises.writeFile(this.#screenshotDir + '/' + filename, img, 'base64');
-            })
+            });
         }
         catch (e) {
             logger.error('error saving screenshot. error message: ' + e.toString())
         }
         return filename;
+    }
+
+    binEncode(data) {
+        var binArray = [];
+        var datEncode = "";
+
+        for (let i=0; i < data.length; i++) {
+            binArray.push(data[i].charCodeAt(0).toString(2));
+        }
+        for (let j=0; j < binArray.length; j++) {
+            var pad = padding_left(binArray[j], '0', 8);
+            datEncode += pad + ' ';
+        }
+        function padding_left(s, c, n) { if (! s || ! c || s.length >= n) {
+            return s;
+        }
+            var max = (n - s.length)/c.length;
+            for (let i = 0; i < max; i++) {
+                s = c + s; } return s;
+        }
+        //console.log(binArray);
+    }
+
+    setScreenshot(value){
+        this.#screenShot = value;
     }
 
     getReportDir()

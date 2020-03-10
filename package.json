@@ -1,6 +1,6 @@
 {
   "name": "qe.automation.report",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Library to generate json data for html report",
   "main": "./src/main.js",
   "scripts": {

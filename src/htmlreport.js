@@ -212,7 +212,7 @@ function htmlReport(reportdata) {
     "        temptable += '<div class=\"col-md-1\">' + new Date(step.starttime).toLocaleTimeString()+  '</div>';\n" +
     "        temptable += '<div class=\"col-md-1\">' + new Date(step.endtime).toLocaleTimeString()+  '</div>';\n" +
     "        temptable += '<div class=\"col-md-1\">' + new Date(new Date(step.endtime) - new Date(step.starttime)).toISOString().slice(11, -1).substring(0,12)+  '</div>';\n" +
-    "        temptable += '<div class=\"col-md-1\">'+(step.screenshot == null?'':'<a href=\"#\" data-toggle=\"modal\" data-target=\"#modal\"><img onclick=\"expand(this.src)\" style=\"width:100%;height:50px;\" src=\"screenshots/'+step.screenshot+'\"/></a>' )+'</div>';\n" +
+    "        temptable += '<div class=\"col-md-1\">'+(step.screenshot == null?'':step.screenshot.indexOf('.png') > -1?'<a href=\"#\" data-toggle=\"modal\" data-target=\"#modal\"><img onclick=\"expand(this.src)\" style=\"width:100%;height:50px;\" src=\"screenshots/'+step.screenshot+'\"/></a>' :'<a href=\"#\" data-toggle=\"modal\" data-target=\"#modal\"><img onclick=\"expand(this.src)\" style=\"width:100%;height:50px;\" src=\"data:image/jpeg;base64,'+step.screenshot+'\"/></a>' )+'</div>';\n" +
     "\n" +
     "        temptable+='</div>';\n" +
     "        temptable += '<legend class=\"'+color+'\"></legend>';\n" +
