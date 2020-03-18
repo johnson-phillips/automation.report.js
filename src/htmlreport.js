@@ -118,7 +118,7 @@ function htmlReport(reportdata) {
     "            temp += '<h4 class=\"panel-title\">';\n" +
     "            temp += ' <div class=\"row\">';\n" +
     "            temp += '<div class=\"col-sm-8\">';\n" +
-    "            temp += 'Test Name: ' + element.name + '' + '<br/>' + 'Test Class: ' +element.classname + '<br/>' + 'Method: ' +element.methodname;\n" +
+    "            temp += 'Test Name: ' + element.name + '' + '<br/>' + 'Description: ' +element.description ;\n" +
     "            temp += '</div>';\n" +
     "            temp += '<div class=\"col-sm-1\">';\n" +
     "            temp += '<label>'+new Date(element.starttime).toLocaleTimeString()+'</label>';\n" +
@@ -127,7 +127,7 @@ function htmlReport(reportdata) {
     "            temp += '<label>'+new Date(element.endtime).toLocaleTimeString()+'</label>';\n" +
     "            temp += '</div>';\n" +
     "            temp += '<div class=\"col-sm-1\">';\n" +
-    "            temp += '<label>'+new Date(new Date(element.endtime) - new Date(element.starttime)).toISOString().slice(11, -1).substring(0,12)+'</label>';\n" +
+    "            temp += '<label>'+new Date(new Date(element.endtime) - new Date(element.starttime)).toISOString().slice(11, -1).substring(0,8)+'</label>';\n" +
     "            temp += '</div>';\n" +
     "            temp += '<div class=\"col-sm-1\">';\n" +
     "            temp += '<label>'+(element.hasOwnProperty('steps')?element.steps.length:0)+'</label>';\n" +
@@ -173,7 +173,7 @@ function htmlReport(reportdata) {
     "        var id = '#' + testid + ' .panel-body';\n" +
     "        $(id).html('');\n" +
     "        var test = tests.tests[testid];\n" +
-    "        $('<h3>Steps</h3><input id=\"showcode\" type=\"checkbox\" class=\"btn-primary\" onclick=\"showCode(this)\">Show Code Lines</input>').appendTo(id);\n" +
+    "        $('<h3>Steps</h3>').appendTo(id);\n" +
     "        var j = 1;\n" +
     "        $.each(test.steps,function(index,step) {\n" +
     "            var color = '';\n" +
@@ -189,8 +189,6 @@ function htmlReport(reportdata) {
     "\n" +
     "        var temptable = '<div class=\"row w3-left-align\" '+color+' >';\n" +
     "        var details = '';\n" +
-    "            if(step.classname && step.methodname)\n" +
-    "                details = ' Class: '+step.classname+ ' Method: ' + step.methodname + ' Line: '+step.linenumber + ' ' ;\n" +
     "        if(step.isapi)\n" +
     "        {\n" +
     "            temptable += '<div class=\"col-md-6\"><textarea rows=3 style=\"width:100%;\">' + step.name + '</textarea></div>';\n" +
@@ -211,7 +209,7 @@ function htmlReport(reportdata) {
     "        }\n" +
     "        temptable += '<div class=\"col-md-1\">' + new Date(step.starttime).toLocaleTimeString()+  '</div>';\n" +
     "        temptable += '<div class=\"col-md-1\">' + new Date(step.endtime).toLocaleTimeString()+  '</div>';\n" +
-    "        temptable += '<div class=\"col-md-1\">' + new Date(new Date(step.endtime) - new Date(step.starttime)).toISOString().slice(11, -1).substring(0,12)+  '</div>';\n" +
+    "        temptable += '<div class=\"col-md-1\">' + new Date(new Date(step.endtime) - new Date(step.starttime)).toISOString().slice(11, -1).substring(0,8)+  '</div>';\n" +
     "        temptable += '<div class=\"col-md-1\">'+(step.screenshot == null?'':step.screenshot.indexOf('.png') > -1?'<a href=\"#\" data-toggle=\"modal\" data-target=\"#modal\"><img onclick=\"expand(this.src)\" style=\"width:100%;height:50px;\" src=\"screenshots/'+step.screenshot+'\"/></a>' :'<a href=\"#\" data-toggle=\"modal\" data-target=\"#modal\"><img onclick=\"expand(this.src)\" style=\"width:100%;height:50px;\" src=\"data:image/jpeg;base64,'+step.screenshot+'\"/></a>' )+'</div>';\n" +
     "\n" +
     "        temptable+='</div>';\n" +
