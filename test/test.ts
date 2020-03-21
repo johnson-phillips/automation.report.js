@@ -1,4 +1,4 @@
-let report = require("../src/main");
+import {report} from "../src/main";
 
 report.logger.level = 'info';
 report.testData.startTest('my test','this is intial test');
@@ -10,7 +10,3 @@ report.testData.addAssertStep('verify string','abc','abc');
 report.testData.addAssertStepFailOnMismatch('verify number',1,1);
 report.testData.addAssertStep('verify test',13,123);
 report.testData.endTest();
-console.log(JSON.stringify(report.testData.getSuite()));
-
-
-

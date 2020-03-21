@@ -5,6 +5,10 @@ usage:
 ```
 let report = require("qe.automation.report");
 ```
+usage typescript:
+```
+import {report} from "qe.automation.report";
+```
 To start capturing test data call startTest method and pass test name and description as parameters
 ```
 report.testData.startTest(string,string);

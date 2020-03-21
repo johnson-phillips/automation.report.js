@@ -1,5 +1,5 @@
 const {Builder, By, Key, until, Capabilities} = require('selenium-webdriver');
-const report = require("../src/main");
+import {report} from '../src/main';
 const UI = require('qe.automation.ui');
 
 report.logger.level = 'all';

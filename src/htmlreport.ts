@@ -1,4 +1,4 @@
-function htmlReport(reportdata) {
+export function htmlReport(reportdata:string) {
 
    return "<!DOCTYPE html>\n" +
     "<html lang=\"en\">\n" +
@@ -269,6 +269,3 @@ function htmlReport(reportdata) {
 
 
 }
-
-
-module.exports = htmlReport;

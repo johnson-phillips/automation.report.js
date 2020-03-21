@@ -1,10 +1,11 @@
 {
   "name": "qe.automation.report",
-  "version": "0.0.8",
+  "version": "0.0.9",
   "description": "Library to generate json data for html report",
-  "main": "./src/main.js",
+  "main": ".dist/src/main.js",
+  "types": "dist/src/main.d.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "rm -rf dist && tsc && node dist/test/test.js"
   },
   "repository": {
     "type": "git",
