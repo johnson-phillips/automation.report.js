@@ -1,8 +1,8 @@
 {
   "name": "qe.automation.report",
-  "version": "0.0.9",
+  "version": "0.1.0",
   "description": "Library to generate json data for html report",
-  "main": ".dist/src/main.js",
+  "main": "dist/src/main.js",
   "types": "dist/src/main.d.ts",
   "scripts": {
     "test": "rm -rf dist && tsc && node dist/test/test.js"
@@ -23,5 +23,8 @@
   },
   "dependencies": {
     "log4js": "^6.1.2"
-  }
+  },
+  "files": [
+    "dist/src"
+  ]
 }
