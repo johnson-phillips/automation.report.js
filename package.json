@@ -1,11 +1,12 @@
 {
   "name": "qe.automation.report",
-  "version": "0.1.0",
+  "version": "0.1.2",
   "description": "Library to generate json data for html report",
   "main": "dist/src/main.js",
   "types": "dist/src/main.d.ts",
   "scripts": {
-    "test": "rm -rf dist && tsc && node dist/test/test.js"
+    "test": "rm -rf dist && tsc && jasmine --config=jasmine.json",
+    "test_custom": "jp=$abc node temp.js"
   },
   "repository": {
     "type": "git",
@@ -19,6 +20,8 @@
   "author": "Johnson Phillips",
   "license": "ISC",
   "devDependencies": {
+    "@types/jasmine": "^3.5.10",
+    "jasmine": "^3.5.0",
     "qe.automation.ui": "^1.0.1"
   },
   "dependencies": {

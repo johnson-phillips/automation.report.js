@@ -6,11 +6,12 @@
     "outDir": "dist",
     "allowJs": true,
     "lib": ["es2017", "es7", "es6", "dom"],
-    "types": [  "node" ],
+    "types": [  "node","jasmine" ],
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
     "declaration": true,
-    "sourceMap": false
+    "sourceMap": false,
+    "resolveJsonModule": true
   },
   "include": [
     "src/**/*",

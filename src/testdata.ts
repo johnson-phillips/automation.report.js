@@ -34,7 +34,7 @@ export class TestData {
         }
     }
 
-    startTest(name:string, description:string)
+    async startTest(name:string, description:string)
     {
         this.test = new Test();
         this.test.success = true;
@@ -45,6 +45,10 @@ export class TestData {
         this.test.endtime = new Date().toISOString();
         this.test.steps = [];
         this.suite.totaltests += 1;
+
+        logger.info('Test Started')
+        logger.info('Test Name: ' + name);
+        logger.info('Test Description: ' + description);
     }
 
     /***
@@ -52,7 +56,7 @@ export class TestData {
      * @param err - if any error msg has to be pass, it can be string or any object including Error object. Pass null if there is no error
      * @param isApiorScreenshot - pass true, if you adding api request or response, this will ensure the html report will encapsulate this in a text area or pass the driver instance for ui tests to capture screenshot
      */
-    addTestStep(description:string ,err:any, isApiorScreenshot?:any)
+    async addTestStep(description:string ,err:any, isApiorScreenshot?:any)
     {
         let step = new Step();
         try
@@ -87,18 +91,15 @@ export class TestData {
                 case 'object':
                     if(this.supportDrivers.indexOf(isApiorScreenshot.constructor.name) > -1)
                 {
-                    if(err)
-                    {
-                        (async () => {
-                            await isApiorScreenshot.takeScreenshot().then((img:any) => {
-                                step.screenshot = img;
-                            });
+                    if(err) {
+                        await isApiorScreenshot.takeScreenshot().then((img: any) => {
+                            step.screenshot = img;
                             step.isapi = false;
-                        })();
+                        });
                     }
                     else
                     {
-                        step.screenshot = this.addScreenShot(isApiorScreenshot);
+                        step.screenshot = await this.addScreenShot(isApiorScreenshot);
                         step.isapi = false;
                     }
 
@@ -116,49 +117,50 @@ export class TestData {
         }
     }
 
-    addAssertStep(message:string, expected:any, actual:any, isApiorScreenshot?:any)
+    async addAssertStep(message:string, expected:any, actual:any, isApiorScreenshot?:any)
     {
         if(expected === actual){
-            this.addTestStep(message + " expected:"+expected + " actual:" + actual,null,isApiorScreenshot);
+            await this.addTestStep(message + " expected:"+expected + " actual:" + actual,null,isApiorScreenshot);
         }
         else{
-            this.addTestStep(message + " expected:" + expected + " actual:" + actual,"not equal",isApiorScreenshot);
+           await this.addTestStep(message + " expected:" + expected + " actual:" + actual,"not equal",isApiorScreenshot);
         }
     }
 
-    addAssertStepFailOnMismatch(message:string, expected:any, actual:any, isApiorScreenshot?:any)
+    async addAssertStepFailOnMismatch(message:string, expected:any, actual:any, isApiorScreenshot?:any)
     {
         if(expected === actual){
-            this.addTestStep(message + " expected:"+expected + " actual:" + actual,null,isApiorScreenshot);
+            await this.addTestStep(message + " expected:"+expected + " actual:" + actual,null,isApiorScreenshot);
         }
         else{
-            this.addTestStep(message + " expected:" + expected + " actual:" + actual,"not equal",isApiorScreenshot);
+            await this.addTestStep(message + " expected:" + expected + " actual:" + actual,"not equal",isApiorScreenshot);
             throw new Error("not equal - expected:" + expected + " actual:" + actual);
         }
     }
 
-    endTest()
+    async endTest()
     {
         this.test.endtime = new Date().toISOString();
         const test = this.test;
         if(this.test.success)
         {
             this.suite.totalpass += 1;
-        }
-    else {
+        } else {
         this.suite.totalfail += 1;
-    }
+        }
         this.test = new Test();
         this.suite.tests.push(test);
         this.suite.endtime = new Date().toISOString();
         try
         {
-            fs.writeFile(this.rootDir + '/report/' + this.suite.id + '/report.html', htmlReport(JSON.stringify(this.suite)), function (err:any) {
+            await fs.writeFile(this.rootDir + '/report/' + this.suite.id + '/report.html', htmlReport(JSON.stringify(this.suite)), function (err:any) {
             if (err) throw err;
         });
         } catch (e) {
             logger.error('error creating html report. error message: ' + e.toString())
         }
+
+        logger.info('End Test');
         return test;
     }
 
@@ -167,10 +169,10 @@ export class TestData {
         return this.suite;
     }
 
-    addScreenShot(data:any) {
+    async addScreenShot(data:any) {
         let filename = Date.now() + '.png';
         try {
-            data.takeScreenshot().then((img:any) => {
+            await data.takeScreenshot().then((img:any) => {
                 fs.promises.writeFile(this.screenshotDir + '/' + filename, img, 'base64');
             });
         }
