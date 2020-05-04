@@ -1,16 +1,15 @@
 {
-  "name": "qe.automation.report",
+  "name": "automation.report",
   "version": "0.1.2",
   "description": "Library to generate json data for html report",
   "main": "dist/src/main.js",
   "types": "dist/src/main.d.ts",
   "scripts": {
-    "test": "rm -rf dist && tsc && jasmine --config=jasmine.json",
-    "test_custom": "jp=$abc node temp.js"
+    "test": "rm -rf dist && tsc && jasmine --config=jasmine.json"
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:johnson-phillips/qe.automation.report.git"
+    "url": "https://github.com/johnson-phillips/automation.report.js.git"
   },
   "keywords": [
     "report",
