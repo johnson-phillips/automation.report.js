@@ -1,13 +1,13 @@
-# qe.automation.report
+# automation.report
 javascript library to create simple html report for test execution
 
 usage:
 ```
-let report = require("qe.automation.report");
+let report = require("automation.report");
 ```
 usage typescript:
 ```
-import {report} from "qe.automation.report";
+import {report} from "automation.report";
 ```
 To start capturing test data call startTest method and pass test name and description as parameters
 ```

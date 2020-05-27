@@ -4,7 +4,8 @@ import {Suite} from './suite';
 let path = require('path');
 let fs = require('fs');
 import {htmlReport} from './htmlreport';
-import {logger} from "./logger";
+import logger from "./logger";
+
 
 export class TestData {
  private test:Test = new Test();
@@ -34,7 +35,7 @@ export class TestData {
         }
     }
 
-    async startTest(name:string, description:string)
+    startTest(name:string, description:string)
     {
         this.test = new Test();
         this.test.success = true;
@@ -59,26 +60,24 @@ export class TestData {
     async addTestStep(description:string ,err:any, isApiorScreenshot?:any)
     {
         let step = new Step();
-        try
-        {
-
+        try {
             step.name = description;
             step.description = description;
             step.starttime = this.startTime;
             this.startTime = new Date().toISOString();
             step.endtime =  this.startTime;
-            if(err)
-            {
+            if(err) {
                 step.error = err;
                 step.success = false;
                 this.test.success = false;
                 logger.error(description + ' ' + err);
-            }
-            else{
+            } else {
                 logger.info(description);
             }
             const type = typeof isApiorScreenshot;
             switch (type) {
+                case null:
+                    break;
                 case 'boolean':
                     step.isapi = isApiorScreenshot;
                     step.screenshot = null;
@@ -89,23 +88,19 @@ export class TestData {
                     step.isapi = false;
                     break;
                 case 'object':
-                    if(this.supportDrivers.indexOf(isApiorScreenshot.constructor.name) > -1)
-                {
+                    if(isApiorScreenshot == null){
+                        break;
+                    } else if(this.supportDrivers.indexOf(isApiorScreenshot.constructor.name) > -1) {
                     if(err) {
                         await isApiorScreenshot.takeScreenshot().then((img: any) => {
                             step.screenshot = img;
                             step.isapi = false;
                         });
-                    }
-                    else
-                    {
+                    } else {
                         step.screenshot = await this.addScreenShot(isApiorScreenshot);
                         step.isapi = false;
                     }
-
-
-                }
-                else{
+                } else {
                     logger.info(isApiorScreenshot.constructor.name + ' not found');
                 }
                     break;
@@ -113,7 +108,7 @@ export class TestData {
             this.test.steps.push(step);
             this.suite.totalsteps += 1;
         } catch (e) {
-            logger.error('error adding step. error message: ' + e.toString())
+            logger.error('error adding step. error message: ' + e.toString(),e)
         }
     }
 
@@ -151,15 +146,13 @@ export class TestData {
         this.test = new Test();
         this.suite.tests.push(test);
         this.suite.endtime = new Date().toISOString();
-        try
-        {
-            await fs.writeFile(this.rootDir + '/report/' + this.suite.id + '/report.html', htmlReport(JSON.stringify(this.suite)), function (err:any) {
+        try {
+            await fs.writeFile(this.rootDir + 'report/' + this.suite.id + '/report.html', htmlReport(JSON.stringify(this.suite)), function (err:any) {
             if (err) throw err;
         });
         } catch (e) {
             logger.error('error creating html report. error message: ' + e.toString())
         }
-
         logger.info('End Test');
         return test;
     }
@@ -175,8 +168,7 @@ export class TestData {
             await data.takeScreenshot().then((img:any) => {
                 fs.promises.writeFile(this.screenshotDir + '/' + filename, img, 'base64');
             });
-        }
-        catch (e) {
+        } catch (e) {
             logger.error('error saving screenshot. error message: ' + e.toString())
         }
         return filename;
@@ -200,7 +192,6 @@ export class TestData {
             for (let i = 0; i < max; i++) {
                 s = c + s; } return s;
         }
-        //console.log(binArray);
     }
 
     setScreenshot(value:any){
@@ -219,7 +210,6 @@ export class TestData {
     }
 }
 
-
 function getRoot() {
     let rootDir = __dirname.split(path.sep);
     let pathext = '';
@@ -232,4 +222,10 @@ function getRoot() {
     }
     return pathext;
 
+}
+
+function getDirectories(path:string) {
+    return fs.readdirSync(path).filter(function (file:string) {
+        return fs.statSync(path+'/'+file).isDirectory();
+    });
 }

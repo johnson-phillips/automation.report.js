@@ -1,11 +1,11 @@
 {
   "name": "automation.report",
-  "version": "0.1.2",
-  "description": "Library to generate json data for html report",
+  "version": "0.1.3",
+  "description": "Library to generate html report and export data as json",
   "main": "dist/src/main.js",
   "types": "dist/src/main.d.ts",
   "scripts": {
-    "test": "rm -rf dist && tsc && jasmine --config=jasmine.json"
+    "test": "rm -rf dist && tsc && node dist/test/spec.js"
   },
   "repository": {
     "type": "git",
@@ -21,10 +21,10 @@
   "devDependencies": {
     "@types/jasmine": "^3.5.10",
     "jasmine": "^3.5.0",
-    "qe.automation.ui": "^1.0.1"
+    "automation.ui": "^1.0.0"
   },
   "dependencies": {
-    "log4js": "^6.1.2"
+    "log4js": "^6.2.1"
   },
   "files": [
     "dist/src"

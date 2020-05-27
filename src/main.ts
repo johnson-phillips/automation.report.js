@@ -1,7 +1,7 @@
 import {TestData} from "./testdata";
-const logger = require('../src/logger');
+import logger from "./logger";
 
 export const report = {
     testData: new TestData(),
     logger: logger
-}
+};
