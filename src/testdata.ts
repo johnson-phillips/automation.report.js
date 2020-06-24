@@ -5,38 +5,47 @@ let path = require('path');
 let fs = require('fs');
 import {htmlReport} from './htmlreport';
 import logger from "./logger";
+const fsExtra = require('fs-extra');
 
 
 export class TestData {
  private test:Test = new Test();
  private suite:Suite = new Suite();
  private startTime:string = '';
- readonly rootDir:string = '';
  readonly reportDir:string  = '';
+ readonly currentReportDir:string  = '';
  readonly screenshotDir:any = '';
  private supportDrivers = ['Driver','ProtractorBrowser','thenableWebDriverProxy'];
- private screenShot:boolean = false;
+ takeScreenShot:boolean = true;
 
     constructor() {
-        try
-        {
+        try {
+            this.reportDir = getReportRootDirectory();
             this.startTime = new Date().toISOString();
-            this.rootDir = getRoot();
-            if (!fs.existsSync(this.rootDir + '/report/')){
-            fs.mkdirSync(this.rootDir + '/report');
+            if (!fs.existsSync(this.reportDir)) {
+            fs.mkdirSync(this.reportDir);
         }
-        this.reportDir = this.rootDir + '/report/' + this.suite.id;
-        this.screenshotDir = this.rootDir + '/report/' + this.suite.id + '/screenshots';
-        logger.debug('dir for report data is ' + this.reportDir);
-        fs.mkdirSync(this.reportDir);
+        this.currentReportDir = this.reportDir + this.suite.id;
+        this.screenshotDir = this.currentReportDir + '/screenshots';
+        logger.debug('dir for report data is ' + this.currentReportDir);
+        fs.mkdirSync(this.currentReportDir);
         fs.mkdirSync(this.screenshotDir);
         } catch (e) {
             logger.fatal('error creating report folder. error message ' + e.toString());
         }
     }
 
-    startTest(name:string, description:string)
-    {
+    deleteReportFolder(){
+        fsExtra.emptyDirSync(this.reportDir);
+        fs.mkdirSync(this.currentReportDir);
+        fs.mkdirSync(this.screenshotDir);
+    }
+
+    initStartTime() {
+        this.startTime = new Date().toISOString();
+    }
+
+    startTest(name:string, description:string) {
         this.test = new Test();
         this.test.success = true;
         this.startTime = new Date().toISOString();
@@ -57,8 +66,7 @@ export class TestData {
      * @param err - if any error msg has to be pass, it can be string or any object including Error object. Pass null if there is no error
      * @param isApiorScreenshot - pass true, if you adding api request or response, this will ensure the html report will encapsulate this in a text area or pass the driver instance for ui tests to capture screenshot
      */
-    async addTestStep(description:string ,err:any, isApiorScreenshot?:any)
-    {
+    async addTestStep(description:string ,err:any, isApiorScreenshot?:any) {
         let step = new Step();
         try {
             step.name = description;
@@ -89,6 +97,8 @@ export class TestData {
                     break;
                 case 'object':
                     if(isApiorScreenshot == null){
+                        step.isapi = false;
+                        step.screenshot = null;
                         break;
                     } else if(this.supportDrivers.indexOf(isApiorScreenshot.constructor.name) > -1) {
                     if(err) {
@@ -97,7 +107,7 @@ export class TestData {
                             step.isapi = false;
                         });
                     } else {
-                        step.screenshot = await this.addScreenShot(isApiorScreenshot);
+                        step.screenshot = this.takeScreenShot? await this.addScreenShot(isApiorScreenshot):null;
                         step.isapi = false;
                     }
                 } else {
@@ -112,8 +122,7 @@ export class TestData {
         }
     }
 
-    async addAssertStep(message:string, expected:any, actual:any, isApiorScreenshot?:any)
-    {
+    async addAssertStep(message:string, expected:any, actual:any, isApiorScreenshot?:any) {
         if(expected === actual){
             await this.addTestStep(message + " expected:"+expected + " actual:" + actual,null,isApiorScreenshot);
         }
@@ -122,19 +131,17 @@ export class TestData {
         }
     }
 
-    async addAssertStepFailOnMismatch(message:string, expected:any, actual:any, isApiorScreenshot?:any)
-    {
+    async addAssertStepFailOnMismatch(message:string, expected:any, actual:any, isApiorScreenshot?:any) {
         if(expected === actual){
             await this.addTestStep(message + " expected:"+expected + " actual:" + actual,null,isApiorScreenshot);
         }
         else{
             await this.addTestStep(message + " expected:" + expected + " actual:" + actual,"not equal",isApiorScreenshot);
-            throw new Error("not equal - expected:" + expected + " actual:" + actual);
+            throw new Error(message + " expected:" + expected + " actual:" + actual);
         }
     }
 
-    async endTest()
-    {
+    async endTest() {
         this.test.endtime = new Date().toISOString();
         const test = this.test;
         if(this.test.success)
@@ -147,7 +154,7 @@ export class TestData {
         this.suite.tests.push(test);
         this.suite.endtime = new Date().toISOString();
         try {
-            await fs.writeFile(this.rootDir + 'report/' + this.suite.id + '/report.html', htmlReport(JSON.stringify(this.suite)), function (err:any) {
+            await fs.writeFile(getReportRootDirectory() + this.suite.id + '/report.html', htmlReport(JSON.stringify(this.suite)), function (err:any) {
             if (err) throw err;
         });
         } catch (e) {
@@ -157,8 +164,7 @@ export class TestData {
         return test;
     }
 
-    getSuite()
-    {
+    getSuite() {
         return this.suite;
     }
 
@@ -194,23 +200,17 @@ export class TestData {
         }
     }
 
-    setScreenshot(value:any){
-        this.screenShot = value;
-    }
-
-    getReportDir()
-    {
+    getReportDir() {
         return this.reportDir;
     }
 
-    addSupportDriver(driver:string)
-    {
+    addSupportDriver(driver:string) {
         this.supportDrivers.push(driver);
         return this.supportDrivers;
     }
 }
 
-function getRoot() {
+function getReportRootDirectory() {
     let rootDir = __dirname.split(path.sep);
     let pathext = '';
     for(let i=0;i < rootDir.length ; i++){
@@ -220,8 +220,7 @@ function getRoot() {
             break;
         }
     }
-    return pathext;
-
+    return pathext + 'report/';
 }
 
 function getDirectories(path:string) {

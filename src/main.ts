@@ -1,7 +1,8 @@
 import {TestData} from "./testdata";
 import logger from "./logger";
 
-export const report = {
+
+global.report = {
     testData: new TestData(),
     logger: logger
 };
