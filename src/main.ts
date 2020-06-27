@@ -1,11 +1,4 @@
 import {TestData} from "./testdata";
-import logger from "./logger";
 
-
-const report = {
-    testData: new TestData(),
-    logger: logger
-};
-
-
+const report = new TestData();
 export default report;

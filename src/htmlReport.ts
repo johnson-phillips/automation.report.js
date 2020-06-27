@@ -1,4 +1,4 @@
-export function htmlReport(reportdata:string) {
+export default function htmlReport(reportdata:string) {
 
    return "<!DOCTYPE html>\n" +
     "<html lang=\"en\">\n" +

@@ -3,7 +3,7 @@ import {Step} from './step';
 import {Suite} from './suite';
 let path = require('path');
 let fs = require('fs');
-import {htmlReport} from './htmlreport';
+import htmlReport from './htmlreport';
 import logger from "./logger";
 const fsExtra = require('fs-extra');
 
@@ -194,7 +194,7 @@ export class TestData {
         function padding_left(s:any, c:any, n:any) { if (! s || ! c || s.length >= n) {
             return s;
         }
-            var max = (n - s.length)/c.length;
+            let max = (n - s.length)/c.length;
             for (let i = 0; i < max; i++) {
                 s = c + s; } return s;
         }
