@@ -1,4 +1,4 @@
-import report from '../src/main';
+import report, {logger} from '../src/main';
 
 async function test() {
     report.deleteReportFolder();

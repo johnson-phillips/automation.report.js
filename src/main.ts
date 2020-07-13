@@ -1,5 +1,6 @@
 import {TestData} from "./testdata";
-import log from './logger';
-export const logger = log;
+import logger from './logger';
+
+export {logger};
 const report = new TestData();
 export default report;

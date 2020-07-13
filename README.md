@@ -12,7 +12,7 @@ import report from "automation.report";
 Sample Report:
 http://www.myappquality.com/
 
-To start capturing test data call startTest method and pass test name and description as parameters
+To start capturing test data call startTest method and pass test name and description as parameters.HTML report gets generated/updated every time endTest method is called.
 ```
 report.startTest(string,string);
 example: report.startTest('verify login','test to verify user can login');

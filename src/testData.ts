@@ -25,8 +25,8 @@ export class TestData {
             if (!fs.existsSync(this.reportDir)) {
             fs.mkdirSync(this.reportDir);
         }
-        this.currentReportDir = this.reportDir + this.suite.id;
-        this.screenshotDir = this.currentReportDir + '/screenshots';
+        this.currentReportDir = path.join(this.reportDir, this.suite.id);
+        this.screenshotDir = path.join(this.currentReportDir, '/screenshots');
         logger.debug('dir for report data is ' + this.currentReportDir);
         fs.mkdirSync(this.currentReportDir);
         fs.mkdirSync(this.screenshotDir);
@@ -220,7 +220,7 @@ function getReportRootDirectory() {
             break;
         }
     }
-    return pathext + 'report/';
+    return  path.join(pathext, 'report/');
 }
 
 function getDirectories(path:string) {
