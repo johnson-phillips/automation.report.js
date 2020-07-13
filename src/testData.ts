@@ -220,7 +220,7 @@ function getReportRootDirectory() {
             break;
         }
     }
-    return  path.join(pathext, 'report/');
+    return  path.join(pathext, 'report' + path.sep);
 }
 
 function getDirectories(path:string) {

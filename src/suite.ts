@@ -1,7 +1,7 @@
 import {Test} from "./test";
 
 export class Suite {
-    id:string = new Date().toLocaleString().replace(/\//g, '-') + Math.random().toString().slice(0,7);
+    id:string = new Date().toLocaleString().replace(/\//g, '-').replace(/, /,'-').replace(/ /g,'');
     totaltests:number = 0;
     totalpass:number = 0;
     totalfail:number = 0;
