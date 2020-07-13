@@ -1,11 +1,9 @@
-import {Step} from "./step";
-
-export class Test {
+export class Test implements ITest {
     success = true;
     description:string = '';
-    name:string = '';
-    starttime:string = new Date().toISOString();
-    endtime:string = new Date().toISOString();
-    steps:Array<Step> = new Array<Step>();
+    name = '';
+    starttime = new Date().toISOString();
+    endtime = new Date().toISOString();
+    steps = new Array<IStep>();
 }
 

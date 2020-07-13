@@ -4,19 +4,20 @@ import {Suite} from './suite';
 let path = require('path');
 let fs = require('fs');
 import htmlReport from './htmlreport';
-import logger from "./logger";
+import {strict as assert} from "assert";
+import {logger} from "./main";
 const fsExtra = require('fs-extra');
 
 
-export class TestData {
- private test:Test = new Test();
- private suite:Suite = new Suite();
- private startTime:string = '';
- readonly reportDir:string  = '';
- readonly currentReportDir:string  = '';
- readonly screenshotDir:any = '';
+export class TestData implements ITestData {
+ private test = new Test();
+ private suite = new Suite();
+ private startTime = '';
+ readonly reportDir  = '';
+ readonly currentReportDir  = '';
+ readonly screenshotDir = '';
  private supportDrivers = ['Driver','ProtractorBrowser','thenableWebDriverProxy'];
- takeScreenShot:boolean = true;
+ takeScreenShot = true;
 
     constructor() {
         try {
@@ -66,7 +67,7 @@ export class TestData {
      * @param err - if any error msg has to be pass, it can be string or any object including Error object. Pass null if there is no error
      * @param isApiorScreenshot - pass true, if you adding api request or response, this will ensure the html report will encapsulate this in a text area or pass the driver instance for ui tests to capture screenshot
      */
-    async addTestStep(description:string ,err:any, isApiorScreenshot?:any) {
+    async addTestStep(description:string ,err:string, isApiorScreenshot?:any) {
         let step = new Step();
         try {
             step.name = description;
@@ -88,7 +89,7 @@ export class TestData {
                     break;
                 case 'boolean':
                     step.isapi = isApiorScreenshot;
-                    step.screenshot = null;
+                    step.screenshot = '';
                     break;
 
                 case 'string':
@@ -98,7 +99,7 @@ export class TestData {
                 case 'object':
                     if(isApiorScreenshot == null){
                         step.isapi = false;
-                        step.screenshot = null;
+                        step.screenshot = '';
                         break;
                     } else if(this.supportDrivers.indexOf(isApiorScreenshot.constructor.name) > -1) {
                     if(err) {
@@ -107,7 +108,7 @@ export class TestData {
                             step.isapi = false;
                         });
                     } else {
-                        step.screenshot = this.takeScreenShot? await this.addScreenShot(isApiorScreenshot):null;
+                        step.screenshot = this.takeScreenShot? await this.addScreenShot(isApiorScreenshot):'';
                         step.isapi = false;
                     }
                 } else {
@@ -123,17 +124,19 @@ export class TestData {
     }
 
     async addAssertStep(message:string, expected:any, actual:any, isApiorScreenshot?:any) {
-        if(expected === actual){
-            await this.addTestStep(message + " expected:"+expected + " actual:" + actual,null,isApiorScreenshot);
+        try {
+            assert.deepStrictEqual(actual, expected, message);
+            await this.addTestStep(message + " expected:"+expected + " actual:" + actual,'',isApiorScreenshot);
+        } catch (e) {
+            await this.addTestStep(message + " expected:"+expected + " actual:" + actual,e,isApiorScreenshot);
         }
-        else{
-           await this.addTestStep(message + " expected:" + expected + " actual:" + actual,"not equal",isApiorScreenshot);
-        }
+
+
     }
 
     async addAssertStepFailOnMismatch(message:string, expected:any, actual:any, isApiorScreenshot?:any) {
         if(expected === actual){
-            await this.addTestStep(message + " expected:"+expected + " actual:" + actual,null,isApiorScreenshot);
+            await this.addTestStep(message + " expected:"+expected + " actual:" + actual,'',isApiorScreenshot);
         }
         else{
             await this.addTestStep(message + " expected:" + expected + " actual:" + actual,"not equal",isApiorScreenshot);

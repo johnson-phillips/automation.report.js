@@ -1,10 +1,10 @@
-export class Step {
-    name:string  ='';
-    description:string = '';
-    starttime:string = new Date().toISOString();
-    endtime:string = new Date().toISOString();
-    success:boolean = true;
-    error:any = null;
-    isapi:boolean = false;
-    screenshot:any = null;
+export class Step implements IStep {
+    name ='';
+    description = '';
+    starttime = new Date().toISOString();
+    endtime = new Date().toISOString();
+    success = true;
+    error = '';
+    isapi = false;
+    screenshot = '';
 }
