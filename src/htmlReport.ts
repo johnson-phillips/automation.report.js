@@ -201,7 +201,7 @@ export default function htmlReport(reportdata:string) {
     "        j+=1;\n" +
     "        if (!step.success)\n" +
     "        {\n" +
-    "            temptable += '<div class=\"col-md-2 w3-center\">'+(step.error === null?\"\":\"Error:<textarea rows=1 style='width:100%;'>\"+ step.error +\"</textarea>\" )+'</div>';\n" +
+    "            temptable += '<div class=\"col-md-2 w3-center\">'+(step.error === null?\"\":\"Error:<textarea rows=1 style='width:100%;'>\"+ JSON.stringify(step.error) +\"</textarea>\" )+'</div>';\n" +
     "        }\n" +
     "        else\n" +
     "        {\n" +
