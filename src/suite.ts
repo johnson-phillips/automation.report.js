@@ -1,7 +1,11 @@
 import {Test} from "./test";
 
 export class Suite {
-    id:string = new Date().toLocaleString().replace(/\//g, '-').replace(/, /,'-').replace(/ /g,'');
+    id:string = new Date().toLocaleString()
+        .replace(/\//g, '-')
+        .replace(/, /,'-')
+        .replace(/ /g,'')
+        .replace(/:/g,'-');
     totaltests:number = 0;
     totalpass:number = 0;
     totalfail:number = 0;
