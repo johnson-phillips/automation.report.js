@@ -214,7 +214,7 @@ function getReportRootDirectory() {
     let rootDir = __dirname.split(path.sep);
     let pathext = '';
     for(let i=0;i < rootDir.length ; i++){
-        pathext += rootDir[i] + path.sep;
+        pathext += rootDir[i] + '/';
         if (fs.existsSync(pathext + 'package.json')) {
             logger.debug('dir for report data is ' + pathext);
             break;
