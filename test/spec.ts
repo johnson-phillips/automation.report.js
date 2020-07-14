@@ -2,7 +2,6 @@ import report, {logger} from '../src/main';
 
 async function test() {
 
-    console.log('av efbf wrwg'.replace(/ /g,'-'));
     report.deleteReportFolder();
     report.startTest('report library features','test to show report library features');
     await report.addTestStep('this is addTestStep method',null);
