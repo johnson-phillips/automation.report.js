@@ -25,7 +25,7 @@ export class TestData {
             if (!fs.existsSync(this.reportDir)) {
             fs.mkdirSync(this.reportDir);
         }
-        this.currentReportDir = this.reportDir + '/' + this.suite.id;
+        this.currentReportDir = this.reportDir + this.suite.id;
         this.screenshotDir = this.currentReportDir +  '/screenshots';
         logger.debug('dir for report data is ' + this.currentReportDir);
         fs.mkdirSync(this.currentReportDir);
