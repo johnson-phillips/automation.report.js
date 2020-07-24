@@ -1,11 +1,12 @@
 {
   "name": "automation.report",
-  "version": "0.2.7",
+  "version": "0.2.8",
   "description": "Library to generate html report and export data as json",
   "main": "dist/src/main.js",
   "types": "dist/src/main.d.ts",
   "scripts": {
-    "test": "rm -rf dist && tsc && node dist/test/spec.js"
+    "test": "rm -rf dist && tsc && node dist/test/spec.js",
+    "prepublish": "npm test"
   },
   "repository": {
     "type": "git",

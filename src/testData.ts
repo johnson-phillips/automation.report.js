@@ -86,7 +86,7 @@ export class TestData {
                 logger.info(description);
             }
 
-            if(this.driver && this.supportDrivers.indexOf(this.driver.constructor.name) > -1) {
+            if(this.driver) {
                 if(err) {
                     this.driver.takeScreenshot().then((img: any) => {
                         step.screenshot = img;
@@ -96,8 +96,6 @@ export class TestData {
                     step.screenshot = this.takeScreenShot?this.addScreenShot(this.driver):null;
                     step.isapi = false;
                 }
-            } else {
-                logger.info(this.driver.constructor.name + ' not found');
             }
             this.test.steps.push(step);
             this.suite.totalsteps += 1;
