@@ -86,7 +86,7 @@ export class TestData {
                 logger.info(description);
             }
 
-            if(this.supportDrivers.indexOf(this.driver.constructor.name) > -1) {
+            if(this.driver && this.supportDrivers.indexOf(this.driver.constructor.name) > -1) {
                 if(err) {
                     this.driver.takeScreenshot().then((img: any) => {
                         step.screenshot = img;
