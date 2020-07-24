@@ -1,6 +1,6 @@
-import {Test} from "./test";
+import Test from "./test";
 
-export class Suite {
+export default class Suite {
     id:string = new Date().toLocaleString()
         .replace(/\//g, '-')
         .replace(/, /,'-')

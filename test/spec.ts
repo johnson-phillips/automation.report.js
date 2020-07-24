@@ -1,17 +1,11 @@
-import report, {logger} from '../src/main';
+import report from '../src/main';
 
-async function test() {
-
-    report.deleteReportFolder();
-    report.startTest('report library features','test to show report library features');
-    await report.addTestStep('this is addTestStep method',null);
-    await report.addTestStep('this is addTestStep with screenshot',null,'imagename');
-    await report.addTestStep('this is addTestStep with api true',null,true);
-    await report.addAssertStep('verify abc = ABC','abc','ABC');
-    await report.addAssertStep('verify abc = abc','abc','abc');
-    await report.endTest();
-}
-
-( async () => {
-    await test();
-})();
+report.deleteReportFolder();
+report.startTest('report library features','test to show report library features');
+report.addTestStep('this is addTestStep method',null);
+report.addTestStep('this is addTestStep with api true',null,true);
+report.strictEqual('verify abc = ABC','abc','ABC');
+report.notStrictEqual('verify abc not equal to abc','abc','abc');
+report.strictEqual('verify abc = abc','abc','abc');
+report.notStrictEqual('verify abc not equal to ABC','abc','ABC');
+report.endTest();

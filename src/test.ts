@@ -1,6 +1,6 @@
-import {Step} from "./step";
+import Step from "./step";
 
-export class Test {
+export default class Test {
     success = true;
     description:string = '';
     name:string = '';
@@ -8,4 +8,3 @@ export class Test {
     endtime:string = new Date().toISOString();
     steps:Array<Step> = new Array<Step>();
 }
-

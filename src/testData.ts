@@ -1,8 +1,9 @@
-import {Test} from './test';
-import {Step} from './step';
-import {Suite} from './suite';
+import Test from './test';
+import Step from './step';
+import Suite from './suite';
 let path = require('path');
 let fs = require('fs');
+import {strict as assert} from "assert";
 import htmlReport from './htmlreport';
 import logger from "./logger";
 const fsExtra = require('fs-extra');
@@ -12,6 +13,7 @@ export class TestData {
  private test:Test = new Test();
  private suite:Suite = new Suite();
  private startTime:string = '';
+ driver:any;
  readonly reportDir:string  = '';
  readonly currentReportDir:string  = '';
  readonly screenshotDir:any = '';
@@ -63,14 +65,15 @@ export class TestData {
 
     /***
      * @param description - description of the step
-     * @param err - if any error msg has to be pass, it can be string or any object including Error object. Pass null if there is no error
-     * @param isApiorScreenshot - pass true, if you adding api request or response, this will ensure the html report will encapsulate this in a text area or pass the driver instance for ui tests to capture screenshot
+     * @param err - if any error msg has to be pass, it can be string or any object including Error object. Pass null or '' if there is no error
+     * @param isApi - pass true, if you adding api request or response, this will ensure the html report will encapsulate this in a text area
      */
-    async addTestStep(description:string ,err:any, isApiorScreenshot?:any) {
+    addTestStep(description:string ,err:any, isApi?:boolean) {
         let step = new Step();
         try {
             step.name = description;
             step.description = description;
+            step.isapi = (isApi == true) || false;
             step.starttime = this.startTime;
             this.startTime = new Date().toISOString();
             step.endtime =  this.startTime;
@@ -82,38 +85,19 @@ export class TestData {
             } else {
                 logger.info(description);
             }
-            const type = typeof isApiorScreenshot;
-            switch (type) {
-                case null:
-                    break;
-                case 'boolean':
-                    step.isapi = isApiorScreenshot;
-                    step.screenshot = null;
-                    break;
 
-                case 'string':
-                    step.screenshot = isApiorScreenshot;
-                    step.isapi = false;
-                    break;
-                case 'object':
-                    if(isApiorScreenshot == null){
+            if(this.supportDrivers.indexOf(this.driver.constructor.name) > -1) {
+                if(err) {
+                    this.driver.takeScreenshot().then((img: any) => {
+                        step.screenshot = img;
                         step.isapi = false;
-                        step.screenshot = null;
-                        break;
-                    } else if(this.supportDrivers.indexOf(isApiorScreenshot.constructor.name) > -1) {
-                    if(err) {
-                        await isApiorScreenshot.takeScreenshot().then((img: any) => {
-                            step.screenshot = img;
-                            step.isapi = false;
-                        });
-                    } else {
-                        step.screenshot = this.takeScreenShot? await this.addScreenShot(isApiorScreenshot):null;
-                        step.isapi = false;
-                    }
+                    });
                 } else {
-                    logger.info(isApiorScreenshot.constructor.name + ' not found');
+                    step.screenshot = this.takeScreenShot?this.addScreenShot(this.driver):null;
+                    step.isapi = false;
                 }
-                    break;
+            } else {
+                logger.info(this.driver.constructor.name + ' not found');
             }
             this.test.steps.push(step);
             this.suite.totalsteps += 1;
@@ -122,26 +106,25 @@ export class TestData {
         }
     }
 
-    async addAssertStep(message:string, expected:any, actual:any, isApiorScreenshot?:any) {
-        if(expected === actual){
-            await this.addTestStep(message + " expected:"+expected + " actual:" + actual,null,isApiorScreenshot);
-        }
-        else{
-           await this.addTestStep(message + " expected:" + expected + " actual:" + actual,"not equal",isApiorScreenshot);
-        }
-    }
-
-    async addAssertStepFailOnMismatch(message:string, expected:any, actual:any, isApiorScreenshot?:any) {
-        if(expected === actual){
-            await this.addTestStep(message + " expected:"+expected + " actual:" + actual,null,isApiorScreenshot);
-        }
-        else{
-            await this.addTestStep(message + " expected:" + expected + " actual:" + actual,"not equal",isApiorScreenshot);
-            throw new Error(message + " expected:" + expected + " actual:" + actual);
+    strictEqual(message:string, expected:any, actual:any, isApi?:any) {
+        try{
+            assert.strictEqual(actual,expected,message);
+            this.addTestStep(message + " expected:"+expected + " actual:" + actual,null,isApi);
+        } catch(e){
+            this.addTestStep(message + " expected:" + expected + " actual:" + actual + " are not equal",e,isApi);
         }
     }
 
-    async endTest() {
+    notStrictEqual(message:string, expected:any, actual:any, isApi?:any) {
+        try{
+            assert.notStrictEqual(actual,expected,message);
+            this.addTestStep(message + " expected:"+expected + " actual:" + actual,null,isApi);
+        } catch(e){
+            this.addTestStep(message + " expected:" + expected + " actual:" + actual + " are equal",e,isApi);
+        }
+    }
+
+    endTest() {
         this.test.endtime = new Date().toISOString();
         const test = this.test;
         if(this.test.success)
@@ -154,9 +137,7 @@ export class TestData {
         this.suite.tests.push(test);
         this.suite.endtime = new Date().toISOString();
         try {
-            await fs.writeFile(getReportRootDirectory() + this.suite.id + '/report.html', htmlReport(JSON.stringify(this.suite)), function (err:any) {
-            if (err) throw err;
-        });
+            fs.writeFileSync(getReportRootDirectory() + this.suite.id + '/report.html', htmlReport(JSON.stringify(this.suite)));
         } catch (e) {
             logger.error('error creating html report. error message: ' + e.toString())
         }
@@ -168,11 +149,11 @@ export class TestData {
         return this.suite;
     }
 
-    async addScreenShot(data:any) {
+    addScreenShot(data:any) {
         let filename = Date.now() + '.png';
         try {
-            await data.takeScreenshot().then((img:any) => {
-                fs.promises.writeFile(this.screenshotDir + '/' + filename, img, 'base64');
+            data.takeScreenshot().then((img:any) => {
+                fs.writeFileSync(this.screenshotDir + '/' + filename, img, 'base64');
             });
         } catch (e) {
             logger.error('error saving screenshot. error message: ' + e.toString())
