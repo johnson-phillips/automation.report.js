@@ -24,10 +24,26 @@ function CustomMochaReporter (runner:any, options:any) {
 
   //Custom Jasmine Reporter
 class CustomJasmineReporter {
-    constructor(){
+  groupByDescribe:boolean = false;
+    constructor(groupByDescribe:boolean){
+      this.groupByDescribe = groupByDescribe;
     }
+
+  suiteStarted(result:any){
+    console.log(result);
+    if(this.groupByDescribe){
+      report.startTest(result.fullName,result.fullName);
+    }
+  }
+  suiteDone(result:any){
+    if(this.groupByDescribe){
+      report.endTest();
+    }
+  }
  specStarted(result:any) {
-        report.startTest(result.fullName.replace(result.description,''),result.description);
+        if(!this.groupByDescribe){
+          report.startTest(result.fullName.replace(result.description,''),result.description);
+        }
     }
  specDone(result:any) {
         for(var i = 0; i < result.failedExpectations.length; i++) {
@@ -35,6 +51,8 @@ class CustomJasmineReporter {
             report.addTestStep( msg, msg);
         }
         report.addTestStep( result.description  + ' ' +  result.status,'');
-        report.endTest();
+        if(!this.groupByDescribe){
+          report.endTest();
+        }
       }
 }
