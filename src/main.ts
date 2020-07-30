@@ -30,7 +30,6 @@ class CustomJasmineReporter {
     }
 
   suiteStarted(result:any){
-    console.log(result);
     if(this.groupByDescribe){
       report.startTest(result.fullName,result.fullName);
     }

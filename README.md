@@ -94,3 +94,19 @@ report.strictEqual('verify abc = abc','abc','abc');
 report.notStrictEqual('verify abc not equal to ABC','abc','ABC');
 report.endTest();
 ```
+
+To add this report as custom reporter for protractor and jasmine, in your conf file add:
+```
+const report = require("automation.report").default;
+const CustomJasmineReporter = require("automation.report").CustomJasmineReporter;
+
+under onPrepare function add below:
+onPrepare: function(){
+    report.driver = this.browser.driver;
+    report.deleteReportFolder();
+    jasmine.getEnv().addReporter(new CustomJasmineReporter());
+    //pass a true flag to CustomJasmineReporter to group tests by describe and it block becomes a test step)
+    jasmine.getEnv().addReporter(new CustomJasmineReporter(true));
+}
+```
+
