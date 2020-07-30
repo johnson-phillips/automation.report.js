@@ -1,4 +1,4 @@
-import {TestData} from "./testdata";
+import {TestData} from "./test-data";
 import logger from "./logger";
 export {TestData,logger,CustomJasmineReporter,CustomMochaReporter};
 const report = new TestData();

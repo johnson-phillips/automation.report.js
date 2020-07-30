@@ -4,7 +4,7 @@ import Suite from './suite';
 let path = require('path');
 let fs = require('fs');
 import {strict as assert} from "assert";
-import htmlReport from './htmlReport';
+import htmlReport from './html-report';
 import logger from "./logger";
 const fsExtra = require('fs-extra');
 
