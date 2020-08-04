@@ -6,7 +6,6 @@ export default report;
 
 //custom Mocha Reporter
 function CustomMochaReporter (runner:any, options:any) {
-    report.deleteReportFolder();
       runner.on('test', function(test:any) {
         const title = test.parent?.title || 'data not available';
           report.startTest(title,test.title);

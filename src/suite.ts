@@ -13,4 +13,5 @@ export default class Suite {
     tests:Array<Test> = new Array<Test>();
     starttime:string = new Date().toISOString();
     endtime:string = new Date().toISOString();
+    title:string = 'Execution Results';
 }

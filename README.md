@@ -16,6 +16,14 @@ Current date time is used to create report folder. To delete all report folders 
 ```
 report.deleteReportFolder();
 ```
+Default name of the html file generate is report.html. If you want rename this call setFileName and pass only the name, html extension is appended
+```
+report.setFileName('custom report name');
+```
+Default title of the html report is Execution Results. If you want rename this call setTitle
+```
+report.setTitle('Results for Production Smoke Test');
+```
 
 To capture screenshots assign webdriver istance to driver property of report object.
 ```

@@ -1,18 +1,17 @@
+import * as path from "path";
+import * as assert from "assert";``
+import * as fs from "fs-extra";
 import Test from './test';
 import Step from './step';
 import Suite from './suite';
-let path = require('path');
-let fs = require('fs');
-import {strict as assert} from "assert";
 import htmlReport from './html-report';
 import logger from "./logger";
-const fsExtra = require('fs-extra');
-
 
 export class TestData {
  private test:Test = new Test();
  private suite:Suite = new Suite();
  private startTime:string = '';
+ private fileName:string = 'report';
  driver:any;
  readonly reportDir:string  = '';
  readonly currentReportDir:string  = '';
@@ -38,13 +37,21 @@ export class TestData {
     }
 
     deleteReportFolder(){
-        fsExtra.emptyDirSync(this.reportDir);
+        fs.emptyDirSync(this.reportDir);
         fs.mkdirSync(this.currentReportDir);
         fs.mkdirSync(this.screenshotDir);
     }
 
     initStartTime() {
         this.startTime = new Date().toISOString();
+    }
+
+    setTitle(title:string){
+        this.suite.title = title;
+    }
+
+    setFileName(name:string){
+        this.fileName = name;
     }
 
     startTest(name:string, description:string) {
@@ -135,7 +142,7 @@ export class TestData {
         this.suite.tests.push(test);
         this.suite.endtime = new Date().toISOString();
         try {
-            fs.writeFileSync(getReportRootDirectory() + this.suite.id + '/report.html', htmlReport(JSON.stringify(this.suite)));
+            fs.writeFileSync(getReportRootDirectory() + this.suite.id + '/'+ this.fileName + '.html', htmlReport(JSON.stringify(this.suite)));
         } catch (e) {
             logger.error('error creating html report. error message: ' + e.toString())
         }

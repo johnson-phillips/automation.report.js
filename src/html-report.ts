@@ -20,7 +20,7 @@ export default function htmlReport(reportdata:string) {
     "    }\n" +
     "</style>\n" +
     "<div class=\"container-fluid\">\n" +
-    "<h3 style=\"text-align: center;\">Execution Results</h3>\n" +
+    "<h3 style=\"text-align: center;\" id=\"title\">Execution Results</h3>\n" +
     "    <div class=\"row\" style=\"text-align: center;\">\n" +
     "        <div class=\"col-md-1\"></div>\n" +
     "        <div class=\"col-md-2\">\n" +
@@ -88,7 +88,8 @@ export default function htmlReport(reportdata:string) {
     "        //$(window).bind('resize', $(\"#tests\").css('height', '' + Math.round(.80 * $(window).height())));\n" +
     "    });" +
     "\n" + "var tests = " + reportdata + ";" + "\n" +
-    "console.log(tests);\n" +
+    "document.title = tests.title;\n" +
+    "document.getElementById('title').innerText = tests.title;\n" +
     "\n" +
     "    $('#totaltests').html(tests.totaltests);\n" +
     "    var pass = tests.totalpass;\n" +
@@ -177,13 +178,16 @@ export default function htmlReport(reportdata:string) {
     "        var j = 1;\n" +
     "        $.each(test.steps,function(index,step) {\n" +
     "            var color = '';\n" +
+    "            var tick = '';\n" +
     "\n" +
     "            switch (step.success) {\n" +
     "                case true:\n" +
-    "                    color = 'style=\"border: 1px solid green;\"';\n" +
+    "                    color = '';\n" +
+    "                    tick = '<span class=\"glyphicon glyphicon-ok\" style=\"color:green;bold\"></span>';\n" +
     "                    break;\n" +
     "                case false:\n" +
-    "                    color = 'style=\"border: 1px solid red;\"';\n" +
+    "                    color = '';\n" +
+    "                    tick = '<span class=\"glyphicon glyphicon-remove\" style=\"color:red;bold\"></span>';\n" +
     "                    break;\n" +
     "            }\n" +
     "\n" +
@@ -191,12 +195,12 @@ export default function htmlReport(reportdata:string) {
     "        var details = '';\n" +
     "        if(step.isapi)\n" +
     "        {\n" +
-    "            temptable += '<div class=\"col-md-6\"><textarea rows=3 style=\"width:100%;\">' + step.name + '</textarea></div>';\n" +
+    "            temptable += '<div class=\"col-md-6\">Step:'+j+' ' + tick +'<textarea rows=3 style=\"width:100%;\">' + step.name + '</textarea></div>';\n" +
     "\n" +
     "        }\n" +
     "        else\n" +
     "        {\n" +
-    "            temptable += '<div class=\"col-md-6\">Step:'+j+'<text class=\"debug\" hidden=\"hidden\">' +details +'</text>'+  '<br/>'  + step.name + '</div>';\n" +
+    "            temptable += '<div class=\"col-md-6\">Step:'+j+'<text class=\"debug\" hidden=\"hidden\">' +details +'</text>'+  '<br/>'  + tick + ' ' + step.name +'</div>';\n" +
     "        }\n" +
     "        j+=1;\n" +
     "        if (!step.success)\n" +
