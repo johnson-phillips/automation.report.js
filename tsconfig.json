@@ -6,9 +6,10 @@
     "outDir": "dist",
     "allowJs": true,
     "lib": [ "es6"],
-    "types": [  "node" ],
+    "types": [  "node","mocha" ],
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
+    "allowSyntheticDefaultImports": true,
     "declaration": true,
     "sourceMap": false,
     "resolveJsonModule": true

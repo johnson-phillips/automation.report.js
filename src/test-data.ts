@@ -6,6 +6,8 @@ import Step from './step';
 import Suite from './suite';
 import htmlReport from './html-report';
 import logger from "./logger";
+import * as crypto from "crypto";
+import { count } from "console";
 
 export class TestData {
  private test:Test = new Test();
@@ -92,17 +94,9 @@ export class TestData {
             } else {
                 logger.info(description);
             }
-
             if(this.driver) {
-                if(err) {
-                    this.driver.takeScreenshot().then((img: any) => {
-                        step.screenshot = img;
-                        step.isapi = false;
-                    });
-                } else {
-                    step.screenshot = this.takeScreenShot?this.addScreenShot(this.driver):null;
-                    step.isapi = false;
-                }
+                step.screenshot = this.takeScreenShot?this.addScreenShot(this.driver):null;
+                step.isapi = false;
             }
             this.test.steps.push(step);
             this.suite.totalsteps += 1;
@@ -154,10 +148,10 @@ export class TestData {
         return this.suite;
     }
 
-    addScreenShot(data:any) {
-        let filename = Date.now() + '.png';
+ addScreenShot(data:any,error?:any) {
+        let filename:string = crypto.randomBytes(16).toString("hex") + '.png';
         try {
-            data.takeScreenshot().then((img:any) => {
+             data.takeScreenshot().then((img:any) => {
                 fs.writeFileSync(this.screenshotDir + '/' + filename, img, 'base64');
             });
         } catch (e) {

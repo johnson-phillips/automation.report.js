@@ -43,11 +43,12 @@ class CustomJasmineReporter {
           report.startTest(result.fullName.replace(result.description,''),result.description);
         }
     }
- specDone(result:any) {
+ async specDone(result:any) {
         for(var i = 0; i < result.failedExpectations.length; i++) {
             const msg = result.failedExpectations[i].message;
-            report.addTestStep( msg, msg);
+            await report.addTestStep( msg, msg);
         }
+        if(result.failedExpectations.length == 0)
         report.addTestStep( result.description  + ' ' +  result.status,'');
         if(!this.groupByDescribe){
           report.endTest();
