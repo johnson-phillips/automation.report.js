@@ -20,6 +20,7 @@ export class TestData {
  readonly screenshotDir:any = '';
  private supportDrivers = ['Driver','ProtractorBrowser','thenableWebDriverProxy'];
  takeScreenShot:boolean = true;
+ logApi:boolean = process.env.logApi == "true" || false;
 
     constructor() {
         try {
@@ -79,6 +80,12 @@ export class TestData {
      */
     addTestStep(description:string ,err:any, isApi?:boolean) {
         let step = new Step();
+        if(isApi){
+            // if step is api and logApi is false return empty step object without adding step
+            if(!this.logApi) {
+                return step;
+            }
+        }
         try {
             step.name = description;
             step.description = description;
@@ -96,13 +103,13 @@ export class TestData {
             }
             if(this.driver) {
                 step.screenshot = this.takeScreenShot?this.addScreenShot(this.driver):null;
-                step.isapi = false;
             }
             this.test.steps.push(step);
             this.suite.totalsteps += 1;
         } catch (e) {
             logger.error('error adding step. error message: ' + e.toString(),e)
         }
+        return step;
     }
 
     strictEqual(message:string, expected:any, actual:any, isApi?:any) {
