@@ -57,7 +57,7 @@ export class TestData {
         this.fileName = name;
     }
 
-    startTest(name:string, description:string) {
+    startTest(name:string, description:string, classname?:string, methodname?:string) {
         this.test = new Test();
         this.test.success = true;
         this.startTime = new Date().toISOString();
@@ -67,6 +67,8 @@ export class TestData {
         this.test.endtime = new Date().toISOString();
         this.test.steps = [];
         this.suite.totaltests += 1;
+        this.test.classname = classname;
+        this.test.methodname = methodname;
 
         logger.info('Test Started')
         logger.info('Test Name: ' + name);
