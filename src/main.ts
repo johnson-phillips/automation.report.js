@@ -38,20 +38,20 @@ class CustomJasmineReporter {
       report.endTest();
     }
   }
- specStarted(result:any) {
-        if(!this.groupByDescribe){
-          report.startTest(result.fullName.replace(result.description,''),result.description);
-        }
+  specStarted(result:any) {
+    if(!this.groupByDescribe){
+      report.startTest(result.fullName.replace(result.description,''),result.description);
     }
- async specDone(result:any) {
-        for(var i = 0; i < result.failedExpectations.length; i++) {
-            const msg = result.failedExpectations[i].message;
-            await report.addTestStep( msg, msg);
-        }
-        if(result.failedExpectations.length == 0)
-        report.addTestStep( result.description  + ' ' +  result.status,'');
-        if(!this.groupByDescribe){
-          report.endTest();
-        }
-      }
+    }
+  specDone(result:any) {
+    for(var i = 0; i < result.failedExpectations.length; i++) {
+        const msg = result.failedExpectations[i].message;
+        report.addTestStep( msg, msg);
+    }
+    if(result.failedExpectations.length == 0)
+    report.addTestStep( result.description  + ' ' +  result.status,'');
+    if(!this.groupByDescribe){
+      report.endTest();
+    }
+  }
 }
