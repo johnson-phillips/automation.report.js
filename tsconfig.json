@@ -1,18 +1,12 @@
 {
   "compilerOptions": {
-    "target": "es6",
-    "module": "commonjs",
-    "strict": true,
     "outDir": "dist",
-    "allowJs": true,
-    "lib": [ "es6"],
-    "types": [  "node","mocha" ],
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
-    "allowSyntheticDefaultImports": true,
+    "types": ["node", "jasmine"],
     "declaration": true,
-    "sourceMap": false,
-    "resolveJsonModule": true
+    "esModuleInterop": true,
+    "downlevelIteration": true,
+    "sourceMap": true,
+    "allowSyntheticDefaultImports": true
   },
   "include": [
     "src/**/*",

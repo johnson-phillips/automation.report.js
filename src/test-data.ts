@@ -7,7 +7,6 @@ import Suite from './suite';
 import htmlReport from './html-report';
 import logger from "./logger";
 import * as crypto from "crypto";
-import { count } from "console";
 
 export class TestData {
  private test:Test = new Test();
@@ -80,7 +79,7 @@ export class TestData {
      * @param err - if any error msg has to be pass, it can be string or any object including Error object. Pass null or '' if there is no error
      * @param isApi - pass true, if you adding api request or response, this will ensure the html report will encapsulate this in a text area
      */
-    addTestStep(description:string ,err:any, isApi?:boolean) {
+    async addTestStep(description:string ,err:any, isApi?:boolean) {
         let step = new Step();
         if(isApi){
             // if step is api and logApi is false return empty step object without adding step
@@ -104,7 +103,7 @@ export class TestData {
                 logger.info(description);
             }
             if(this.driver) {
-                step.screenshot = this.takeScreenShot?this.addScreenShot(this.driver):null;
+                step.screenshot = this.takeScreenShot?await this.addScreenShot(this.driver,step.success):null;
             }
             this.test.steps.push(step);
             this.suite.totalsteps += 1;
@@ -112,24 +111,6 @@ export class TestData {
             logger.error('error adding step. error message: ' + e.toString(),e)
         }
         return step;
-    }
-
-    strictEqual(message:string, expected:any, actual:any, isApi?:any) {
-        try{
-            assert.strictEqual(actual,expected,message);
-            this.addTestStep(message + " expected:"+expected + " actual:" + actual,null,isApi);
-        } catch(e){
-            this.addTestStep(message + " expected:" + expected + " actual:" + actual + " are not equal",e,isApi);
-        }
-    }
-
-    notStrictEqual(message:string, expected:any, actual:any, isApi?:any) {
-        try{
-            assert.notStrictEqual(actual,expected,message);
-            this.addTestStep(message + " expected:"+expected + " actual:" + actual,null,isApi);
-        } catch(e){
-            this.addTestStep(message + " expected:" + expected + " actual:" + actual + " are equal",e,isApi);
-        }
     }
 
     endTest() {
@@ -157,11 +138,15 @@ export class TestData {
         return this.suite;
     }
 
- addScreenShot(data:any,error?:any) {
+async addScreenShot(driver:any,success?:any) {
         let filename:string = crypto.randomBytes(16).toString("hex") + '.png';
         try {
-             data.takeScreenshot().then((img:any) => {
-                fs.writeFileSync(this.screenshotDir + '/' + filename, img, 'base64');
+            await driver.takeScreenshot().then((img:any) => {
+                if(!success){
+                    filename = img;
+                } else{
+                    fs.writeFileSync(this.screenshotDir + '/' + filename, img, 'base64');
+                }
             });
         } catch (e) {
             logger.error('error saving screenshot. error message: ' + e.toString())
