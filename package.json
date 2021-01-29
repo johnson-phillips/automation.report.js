@@ -1,12 +1,12 @@
 {
   "name": "automation.report",
-  "version": "0.3.7",
+  "version": "0.4.0",
   "description": "Library to generate html report and export data as json",
   "main": "dist/src/main.js",
   "types": "dist/src/main.d.ts",
   "scripts": {
     "wd": "webdriver-manager update && webdriver-manager start",
-    "test": "protractor test/conf.ts",
+    "test": "rm -rf dist && tsc && protractor test/conf.ts",
     "prepublish": "npm test"
   },
   "repository": {

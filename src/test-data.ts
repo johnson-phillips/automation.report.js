@@ -103,7 +103,11 @@ export class TestData {
                 logger.info(description);
             }
             if(this.driver) {
-                step.screenshot = this.takeScreenShot?await this.addScreenShot(this.driver,step.success):null;
+                if(!step.success){
+                    step.screenshot = await this.addScreenShot(this.driver,step.success);
+                } else {
+                    step.screenshot = this.takeScreenShot?await this.addScreenShot(this.driver):null;
+                }
             }
             this.test.steps.push(step);
             this.suite.totalsteps += 1;
@@ -145,7 +149,7 @@ async addScreenShot(driver:any,success?:any) {
                 if(!success){
                     filename = img;
                 } else{
-                    fs.writeFileSync(this.screenshotDir + '/' + filename, img, 'base64');
+                     fs.writeFileSync(this.screenshotDir + '/' + filename, img, 'base64');
                 }
             });
         } catch (e) {
