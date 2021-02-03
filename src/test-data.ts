@@ -104,9 +104,9 @@ export class TestData {
             }
             if(this.driver) {
                 if(!step.success){
-                    step.screenshot = await this.addScreenShot(this.driver,step.success);
+                    step.screenshot = await this.addScreenShot(this.driver);
                 } else {
-                    step.screenshot = this.takeScreenShot?await this.addScreenShot(this.driver):null;
+                    step.screenshot = this.takeScreenShot?await this.addScreenShot(this.driver, step.success):null;
                 }
             }
             this.test.steps.push(step);
